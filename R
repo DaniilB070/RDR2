@@ -1,0 +1,194 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <locale.h>
+
+/* ===================== ОБЪЯВЛЕНИЯ ФУНКЦИЙ ===================== */
+
+float area_triangle(float a, float b);
+void definition_triangle(void);
+void draw_triangle(int height, int base, char symbol);
+float get_leg(const char* name);
+int get_size(const char* name);
+char get_symbol(void);
+float compare_triangles(float a1, float b1, float a2, float b2);
+void print_menu(void);
+
+/* ===================== ОПРЕДЕЛЕНИЯ ФУНКЦИЙ ===================== */
+
+float area_triangle(float a, float b) {
+    setlocale(LC_ALL, "RUS");
+    if (a <= 0 || b <= 0) {
+        printf("Ошибка: катеты должны быть положительными!\n");
+        return -1.0f;
+    }
+    return (a * b) / 2.0f;
+}
+
+void definition_triangle(void) {
+    printf("\n=== Определение фигуры ===\n");
+    printf("Прямоугольный треугольник - это треугольник, у которого один из углов\n");
+    printf("равен 90 градусам (прямой угол). Стороны, образующие прямой угол,\n");
+    printf("называются катетами, а сторона, противоположная прямому углу, - гипотенузой.\n");
+    printf("Площадь прямоугольного треугольника равна половине произведения катетов:\n");
+    printf("S = (a * b) / 2\n");
+    printf("Гипотенуза находится по теореме Пифагора: c = sqrt(a^2 + b^2)\n");
+    printf("================================\n\n");
+}
+
+void draw_triangle(int height, int base, char symbol) {
+    if (height <= 0 || base <= 0) {
+        printf("Ошибка: размеры должны быть положительными!\n");
+        return;
+    }
+    printf("\n=== Рисунок прямоугольного треугольника ===\n");
+    printf("Высота = %d, основание = %d, символ = '%c'\n\n", height, base, symbol);
+    for (int i = 1; i <= height; i++) {
+        int count = (int)((double)base * i / height + 0.5);
+        if (count < 1) count = 1;
+        for (int j = 1; j <= count; j++) {
+            printf("%c", symbol);
+        }
+        printf("\n");
+    }
+    printf("================================\n\n");
+}
+
+float get_leg(const char* name) {
+    float value;
+    do {
+        printf("Введите длину катета %s (> 0): ", name);
+        if (scanf("%f", &value) != 1) {
+            while (getchar() != '\n');
+            value = -1;
+        }
+        if (value <= 0) {
+            printf("Значение должно быть положительным числом. Повторите ввод.\n");
+        }
+    } while (value <= 0);
+    return value;
+}
+
+int get_size(const char* name) {
+    int value;
+    do {
+        printf("Введите размер %s (целое > 0): ", name);
+        if (scanf("%d", &value) != 1) {
+            while (getchar() != '\n');
+            value = -1;
+        }
+        if (value <= 0) {
+            printf("Значение должно быть положительным целым. Повторите ввод.\n");
+        }
+    } while (value <= 0);
+    return value;
+}
+
+char get_symbol(void) {
+    char ch;
+    printf("Введите символ для рисования (по умолчанию '*', нажмите Enter): ");
+    while ((ch = getchar()) == '\n' || ch == ' ');
+    if (ch == EOF || ch == '\n') {
+        return '*';
+    }
+    while (getchar() != '\n');
+    return ch;
+}
+
+float compare_triangles(float a1, float b1, float a2, float b2) {
+    float s1 = area_triangle(a1, b1);
+    float s2 = area_triangle(a2, b2);
+    if (s1 < 0 || s2 < 0) return 0;
+    return s1 - s2;
+}
+
+void print_menu(void) {
+    printf("\n========================================\n");
+    printf("  Работа с прямоугольным треугольником\n");
+    printf("  (Вариант 4, Лаб. работа 10, Задание 3)\n");
+    printf("========================================\n");
+    printf("1. Рассчитать площадь\n");
+    printf("2. Вывести определение фигуры\n");
+    printf("3. Нарисовать фигуру\n");
+    printf("4. Сравнить два треугольника по площади\n");
+    printf("0. Выход\n");
+    printf("========================================\n");
+    printf("Выберите пункт меню: ");
+}
+
+/* ===================== ГЛАВНАЯ ФУНКЦИЯ ===================== */
+
+int main(void) {
+    setlocale(LC_ALL, "Russian");
+    int choice;
+    float a, b, a2, b2;
+    int height, base;
+    char symbol;
+    float diff;
+    setbuf(stdout, NULL);
+
+    do {
+        print_menu();
+        if (scanf("%d", &choice) != 1) {
+            while (getchar() != '\n');
+            choice = -1;
+        }
+
+        switch (choice) {
+        case 1:
+            printf("\n--- Вычисление площади ---\n");
+            a = get_leg("a");
+            b = get_leg("b");
+            {
+                float s = area_triangle(a, b);
+                if (s >= 0) {
+                    printf("Площадь прямоугольного треугольника с катетами %.2f и %.2f = %.4f\n", a, b, s);
+                    printf("Гипотенуза c = %.4f\n", sqrt(a * a + b * * b));
+                }
+            }
+            break;
+
+        case 2:
+            definition_triangle();
+            break;
+
+        case 3:
+            printf("\n--- Рисование фигуры ---\n");
+            height = get_size("высоты (катет a)");
+            base = get_size("основания (катет b)");
+            while (getchar() != '\n');
+            symbol = get_symbol();
+            draw_triangle(height, base, symbol);
+            break;
+
+        case 4:
+            printf("\n--- Сравнение двух треугольников ---\n");
+            printf("Первый треугольник:\n");
+            a = get_leg("a1");
+            b = get_leg("b1");
+            printf("Второй треугольник:\n");
+            a2 = get_leg("a2");
+            b2 = get_leg("b2");
+            diff = compare_triangles(a, b, a2, b2);
+            printf("Разность площадей (S1 - S2) = %.4f\n", diff);
+            if (diff > 0)
+                printf("Первый треугольник больше по площади.\n");
+            else if (diff < 0)
+                printf("Второй треугольник больше по площади.\n");
+            else
+                printf("Площади равны.\n");
+            break;
+
+        case 0:
+            printf("\nВыход из программы. До свидания!\n");
+            break;
+
+        default:
+            printf("\nНеверный пункт меню. Повторите выбор.\n");
+            break;
+        }
+    } while (choice != 0);
+
+    return 0;
+}
